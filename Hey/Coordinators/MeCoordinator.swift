@@ -48,4 +48,7 @@ extension MeCoordinator {
         guard let viewController = makeViewController(for: .viewGoals) else { return }
         self.navigate(to: viewController, presentModally: false)
     }
+    func logoutUser() {
+        parentCoordinator?.logoutUser()
+    }
 }

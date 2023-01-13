@@ -56,22 +56,7 @@ extension ChatListViewModel {
         // TODO: -
     }
     func getChat(at indexPath: IndexPath) -> Chat? {
-//        return chats.value[indexPath.row]
-
-        // testing
-        return Chat(id: "test-chat",
-                    members: [
-                        "06XwvxuSLGMK75f50HmxXEGtjxi2",
-                        "EG4XUA5VJuX3G1dNZrJvl8MR78i2"
-                    ],
-                    admins: [
-                        "06XwvxuSLGMK75f50HmxXEGtjxi2",
-                    ],
-                    title: "Mu & Vu",
-                    createdTime: Date(),
-                    imageStoragePath: nil,
-                    lastMessage: nil)
-        
+        return chats.value[indexPath.row]
     }
 }
 // MARK: - Internal Helpers
@@ -83,8 +68,15 @@ extension ChatListViewModel {
         else { return }
         
         let userIDsToFetch = self.chats.value.reduce(into: Set<UserID>()) { partialResult, chat in
-            chat.members.forEach { partialResult.insert($0) }
+            chat.members.forEach { memberID in
+                if !memberID.isEmpty {
+                    partialResult.insert(memberID)
+                }
+            }
         }
+        
+        guard !userIDsToFetch.isEmpty else { return }
+        
         let cachedUsers = await appCoordinator.dataProvider
             .getUsers(for: Array(userIDsToFetch))
             .reduce(into: [UserID: AppUser](), { partialResult, user in

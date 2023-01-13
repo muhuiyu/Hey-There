@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import Kingfisher
 
 class MeViewController: BaseMVVMViewController<MeViewModel> {
     
@@ -19,6 +20,8 @@ class MeViewController: BaseMVVMViewController<MeViewModel> {
     private let emailLabel = UILabel()
     
     private let qrCodeImageView = UIImageView()
+    
+    private let logoutButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +47,11 @@ extension MeViewController {
         guard let coordinator = self.coordinator as? MeCoordinator else { return }
         coordinator.showSettings(viewModel: viewModel)
     }
+    @objc
+    private func didTapLogout() {
+        guard let coordinator = self.coordinator as? MeCoordinator else { return }
+        coordinator.logoutUser()
+    }
 }
 // MARK: - View Config
 extension MeViewController {
@@ -57,7 +65,11 @@ extension MeViewController {
         headerContainerView.backgroundColor = .green
         view.addSubview(headerContainerView)
         
-        profileImageView.image = UIImage(systemName: Icons.person)
+        if let url = viewModel.userImageURL {
+            profileImageView.kf.setImage(with: url)
+        } else {
+            profileImageView.image = UIImage(systemName: Icons.person)
+        }
         profileImageView.sizeToFit()
         profileImageCircleView.addSubview(profileImageView)
         view.addSubview(profileImageCircleView)
@@ -84,6 +96,10 @@ extension MeViewController {
             qrCodeImageView.image = QRCodeHelper.generateQRCode(from: memberID)
         }
         view.addSubview(qrCodeImageView)
+        
+        logoutButton.setTitle(AppText.General.logout, for: .normal)
+        logoutButton.addTarget(self, action: #selector(didTapLogout), for: .touchUpInside)
+        view.addSubview(logoutButton)
     }
     private func configureConstraints() {
         headerContainerView.snp.remakeConstraints { make in
@@ -106,6 +122,10 @@ extension MeViewController {
             make.centerX.equalToSuperview()
             make.size.equalTo(300)
             make.top.equalTo(nameStack.snp.bottom).offset(Constants.Spacing.medium)
+        }
+        logoutButton.snp.remakeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.layoutMarginsGuide)
         }
     }
     private func configureSignals() {

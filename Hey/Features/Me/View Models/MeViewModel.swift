@@ -33,6 +33,10 @@ extension MeViewModel {
     var userName: String? {
         return appCoordinator?.userManager.fullName
     }
+    var userImageURL: URL? {
+        guard let path = appCoordinator?.userManager.avatarStoragePath else { return nil }
+        return URL(string: path)
+    }
 }
 // MARK: - Constants and strings
 extension MeViewModel {

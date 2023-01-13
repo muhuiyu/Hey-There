@@ -8,9 +8,13 @@
 import UIKit
 
 extension UIFont {
+    /// Size 42, heavy
     static let h0: UIFont = UIFont.systemFont(ofSize: 42, weight: .heavy)
+    /// Size 36, heavy
     static let h1: UIFont = UIFont.systemFont(ofSize: 36, weight: .heavy)
+    /// Size 24, heavy
     static let h2: UIFont = UIFont.systemFont(ofSize: 24, weight: .heavy)
+    /// Size 24
     static let h2Regular: UIFont = UIFont.systemFont(ofSize: 24)
     static let h3: UIFont = UIFont.systemFont(ofSize: 18, weight: .heavy)
     static let h3Regular: UIFont = UIFont.systemFont(ofSize: 18)

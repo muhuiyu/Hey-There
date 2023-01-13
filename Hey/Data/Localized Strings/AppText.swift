@@ -21,6 +21,7 @@ extension AppText {
         static var pullToRefresh: String { "Pull to refresh" }
         static var goal: String { "Goal" }
         static var noData: String { "No data" }
+        static var logout: String { "Log out" }
     }
 }
 // MARK: - Loading and Auth
@@ -30,6 +31,7 @@ extension AppText {
     }
     struct Auth {
         static var continueWithGoogle: String { "login_google_cta".localized }
+        static var continueWithApple: String { "Continue with Apple" }
         static var emailPlaceholder: String { "Enter email" }
         static var passwordPlaceholder: String { "Enter password" }
         static var codePlaceholder: String { "Enter code" }

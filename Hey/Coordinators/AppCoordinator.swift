@@ -29,95 +29,85 @@ class AppCoordinator: Coordinator {
     }
 
     func start() {
-        // testing
+        showLoadingScreen()
+        configureManagers()
         configureCoordinators()
         setupMainTabBar()
-        configureManagers()
-        showHome()
-        window.makeKeyAndVisible()
         
-        
-//        showLoadingScreen()
-//        configureCoordinators()
-//        setupMainTabBar()
-//        configureAuth()
-//
-//        Task {
-//            configureManagers()
-//            await authCoordinator?.viewModel.checkPreviousSignInSession()
-//            await window.makeKeyAndVisible()
-//        }
+        Task {
+            await authCoordinator?.setup()
+            await setupDataProvider()
+            await window.makeKeyAndVisible()
+        }
     }
 }
-// MARK: - Services and managers
+// MARK: - Navigation
 extension AppCoordinator {
+    func showLoadingScreen(forceReplace: Bool = false, animated: Bool = true) {
+        changeRootViewController(to: LoadingScreenViewController(appCoordinator: self))
+    }
+    func showHome(forceReplace: Bool = true, animated: Bool = true) {
+        changeRootViewController(to: self.mainTabBarController)
+    }
+    func showLogin(forceReplace: Bool = false, animated: Bool = true) {
+        changeRootViewController(to: self.authCoordinator?.navigationController)
+    }
+    func logoutUser() {
+        
+    }
+    /// Sets up observers of data provider
+    func setupDataProvider() async {
+        guard let userID = userManager.id else { return }
+        await dataProvider.setup(userID: userID)
+        await dataProvider.updateUserData()
+    }
+}
+// MARK: - Setup
+extension AppCoordinator {
+    /// Initializes managers
     private func configureManagers() {
         cacheManager.appCoordinator = self
         userManager.appCoordinator = self
         dataProvider.appCoordinator = self
     }
-    private func configureAuth() {
-        let coordinator = AuthCoordinator(navigationController: UINavigationController(tintColor: UIColor.Brand.primary),
-                                          parentCoordinator: self)
-        
-        let welcomeViewController = WelcomeViewController()
-        welcomeViewController.coordinator = coordinator
-        DispatchQueue.main.async {
-            coordinator.navigationController.setViewControllers([ welcomeViewController ], animated: true)
+    /// Initializes coordinators
+    /// Tab coordinators have their own different navigationControllers
+    private func configureCoordinators() {
+        for category in TabBarCategory.allCases {
+            let navigationController = UINavigationController(tintColor: UIColor.Brand.primary)
+            navigationController.navigationItem.largeTitleDisplayMode = .always
+            navigationController.navigationBar.prefersLargeTitles = true
+            
+            childCoordinators[category.coordinatorID] = category.makeCoordinator(navigationController: navigationController,
+                                                                                 parentCoordinator: self)
         }
-        coordinator.navigationController.navigationItem.largeTitleDisplayMode = .always
-        coordinator.navigationController.navigationBar.prefersLargeTitles = true
-        
-        coordinator.viewModel.appCoordinator = self
-        coordinator.viewModel.state
+        configureAuth()
+    }
+    private func configureAuth() {
+        let coordinator = AuthCoordinator(
+            navigationController: UINavigationController(tintColor: UIColor.Brand.primary),
+            parentCoordinator: self
+        )
+        coordinator.signInState
             .asObservable()
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { state in
+            .subscribe(onNext: { [weak self] state in
                 switch state {
                 case .loading:
-                    self.showLoadingScreen()
+                    self?.showLoadingScreen()
                 case .signedIn:
-                    self.showHome()
+                    self?.showHome()
                 case .signedOut:
-                    self.showLogin()
+                    self?.showLogin()
                 }
             })
             .disposed(by: disposeBag)
         
-        self.authCoordinator = coordinator
+        authCoordinator = coordinator
     }
 }
-// MARK: - UI Setup
+// MARK: - Other functions
 extension AppCoordinator {
-    /// Initializes coordinators
-    /// Tab coordinators have their own different navigationControllers
-    private func configureCoordinators() {
-        let firstNavigationController = UINavigationController(tintColor: UIColor.Brand.primary)
-        firstNavigationController.navigationItem.largeTitleDisplayMode = .always
-        firstNavigationController.navigationBar.prefersLargeTitles = true
-        
-        self.childCoordinators[.home] = HomeCoordinator(navigationController: firstNavigationController,
-                                                        parentCoordinator: self)
-        
-        let secondNavigationController = UINavigationController(tintColor: UIColor.Brand.primary)
-        secondNavigationController.navigationItem.largeTitleDisplayMode = .always
-        secondNavigationController.navigationBar.prefersLargeTitles = true
-        self.childCoordinators[.chat] = ChatCoordinator(navigationController: secondNavigationController,
-                                                        parentCoordinator: self)
-        
-        // TODO: - update to money
-        let thirdNavigationController = UINavigationController(tintColor: UIColor.Brand.primary)
-        thirdNavigationController.navigationItem.largeTitleDisplayMode = .always
-        thirdNavigationController.navigationBar.prefersLargeTitles = true
-        self.childCoordinators[.money] = ProgressCoordinator(navigationController: thirdNavigationController,
-                                                             parentCoordinator: self)
-        
-        let forthNavigationController = UINavigationController(tintColor: UIColor.Brand.primary)
-        forthNavigationController.navigationItem.largeTitleDisplayMode = .never
-        forthNavigationController.navigationBar.prefersLargeTitles = false
-        self.childCoordinators[.me] = MeCoordinator(navigationController: forthNavigationController,
-                                                    parentCoordinator: self)
-    }
     private func setupMainTabBar() {
         mainTabBarController = MainTabBarController()
         configureMainTabBar()
@@ -127,26 +117,8 @@ extension AppCoordinator {
         mainTabBarController?.childCoordinators = childCoordinators
         mainTabBarController?.configureTabBarItems()
     }
-}
-
-// MARK: - Generic Navigation
-extension AppCoordinator {
     private func changeRootViewController(to viewController: UIViewController?) {
         guard let viewController = viewController else { return }
         window.rootViewController = viewController
-    }
-}
-
-// MARK: - Navigation
-extension AppCoordinator {
-    func showLoadingScreen(forceReplace: Bool = false, animated: Bool = true) {
-        print("Loading screen")
-//        changeRootViewController(to: LoadingScreenViewController(appCoordinator: self))
-    }
-    func showHome(forceReplace: Bool = true, animated: Bool = true) {
-        changeRootViewController(to: self.mainTabBarController)
-    }
-    func showLogin(forceReplace: Bool = false, animated: Bool = true) {
-        changeRootViewController(to: self.authCoordinator?.navigationController)
     }
 }

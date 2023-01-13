@@ -11,9 +11,9 @@ import Firebase
 typealias UserID = String
 
 struct AppUser {
-    var id: UserID = ""
-    var email: String = ""
-    var fullName: String = ""
+    var id: UserID
+    var email: String
+    var fullName: String
     var createdTime: Date = Date()
     var avatarStoragePath: String? = nil
     
@@ -26,18 +26,19 @@ struct AppUser {
     }
 }
 extension AppUser {
-    mutating func setData(from firebaseUser: User) {
+    init(from firebaseUser: User) {
         self.id = firebaseUser.uid
         self.email = firebaseUser.email ?? ""
         self.fullName = firebaseUser.displayName ?? ""
         self.avatarStoragePath = firebaseUser.photoURL?.absoluteString
     }
-    mutating func clearData() {
-        self.id = ""
-        self.email = ""
-        self.fullName = ""
-        self.createdTime = .distantPast
-        self.avatarStoragePath = nil
+}
+extension AppUser {
+    mutating func setData(from firebaseUser: User) {
+        self.id = firebaseUser.uid
+        self.email = firebaseUser.email ?? ""
+        self.fullName = firebaseUser.displayName ?? ""
+        self.avatarStoragePath = firebaseUser.photoURL?.absoluteString
     }
 }
 extension AppUser: Codable, Hashable {

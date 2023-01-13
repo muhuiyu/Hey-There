@@ -132,6 +132,12 @@
 		E4165A0E296E90040037624C /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E4165A0D296E90040037624C /* FirebaseStorage */; };
 		E4165A10296E90050037624C /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = E4165A0F296E90050037624C /* FirebaseStorageCombine-Community */; };
 		E4165A13296E906D0037624C /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = E4165A12296E906D0037624C /* RxDataSources */; };
+		E4165A16296FC9BB0037624C /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E4165A15296FC9BB0037624C /* Lottie */; };
+		E4165A19296FCA090037624C /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = E4165A18296FCA090037624C /* loading.json */; };
+		E4165A1C296FCB7E0037624C /* TabBarCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4165A1B296FCB7E0037624C /* TabBarCategory.swift */; };
+		E4165A1F296FD4EB0037624C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E4165A1E296FD4EB0037624C /* Kingfisher */; };
+		E4165A2229700FB30037624C /* SignInMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4165A2129700FB30037624C /* SignInMethod.swift */; };
+		E4165A24297011720037624C /* SignInState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4165A23297011720037624C /* SignInState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -241,6 +247,10 @@
 		E416597D296E8E580037624C /* ButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		E416597E296E8E580037624C /* TitleSubtitleDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleSubtitleDetailCell.swift; sourceTree = "<group>"; };
 		E4165980296E8E580037624C /* KeychainHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		E4165A18296FCA090037624C /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
+		E4165A1B296FCB7E0037624C /* TabBarCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCategory.swift; sourceTree = "<group>"; };
+		E4165A2129700FB30037624C /* SignInMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInMethod.swift; sourceTree = "<group>"; };
+		E4165A23297011720037624C /* SignInState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,7 +275,9 @@
 				E41659E6296E8EC50037624C /* RxCocoa in Frameworks */,
 				E41659F4296E8F040037624C /* OrderedCollections in Frameworks */,
 				E41659FC296E90030037624C /* FirebaseAnalytics in Frameworks */,
+				E4165A16296FC9BB0037624C /* Lottie in Frameworks */,
 				E4165A04296E90040037624C /* FirebaseDatabase in Frameworks */,
+				E4165A1F296FD4EB0037624C /* Kingfisher in Frameworks */,
 				E4165A13296E906D0037624C /* RxDataSources in Frameworks */,
 				E41659F2296E8F040037624C /* DequeModule in Frameworks */,
 				E4165A0C296E90040037624C /* FirebaseFirestoreSwift in Frameworks */,
@@ -321,6 +333,7 @@
 		E41658FC296E8E510037624C /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				E4165A2029700FA80037624C /* Model */,
 				E41658FD296E8E510037624C /* View Models */,
 				E41658FF296E8E510037624C /* Views */,
 			);
@@ -469,6 +482,7 @@
 		E4165925296E8E530037624C /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
+				E4165A1A296FCB700037624C /* MainTabBar */,
 				E4165926296E8E530037624C /* AppCoordinator.swift */,
 				E4165927296E8E530037624C /* AuthCoordinator.swift */,
 				E4165928296E8E530037624C /* MeCoordinator.swift */,
@@ -485,6 +499,7 @@
 		E416592F296E8E560037624C /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				E4165A17296FCA090037624C /* Animations */,
 				E4165930296E8E560037624C /* Localized Strings */,
 				E4165933296E8E560037624C /* Mock */,
 				E4165934296E8E560037624C /* Data Providers */,
@@ -666,7 +681,6 @@
 				E4165977296E8E580037624C /* LoadingScreenViewController.swift */,
 				E4165978296E8E580037624C /* ChipView.swift */,
 				E4165979296E8E580037624C /* TextFieldCell.swift */,
-				E416597A296E8E580037624C /* MainTabBarController.swift */,
 				E416597B296E8E580037624C /* DateCell.swift */,
 				E416597C296E8E580037624C /* TitleTableHeaderView.swift */,
 				E416597D296E8E580037624C /* ButtonCell.swift */,
@@ -681,6 +695,32 @@
 				E4165980296E8E580037624C /* KeychainHelper.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		E4165A17296FCA090037624C /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				E4165A18296FCA090037624C /* loading.json */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
+		E4165A1A296FCB700037624C /* MainTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				E416597A296E8E580037624C /* MainTabBarController.swift */,
+				E4165A1B296FCB7E0037624C /* TabBarCategory.swift */,
+			);
+			path = MainTabBar;
+			sourceTree = "<group>";
+		};
+		E4165A2029700FA80037624C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E4165A2129700FB30037624C /* SignInMethod.swift */,
+				E4165A23297011720037624C /* SignInState.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -721,6 +761,8 @@
 				E4165A0D296E90040037624C /* FirebaseStorage */,
 				E4165A0F296E90050037624C /* FirebaseStorageCombine-Community */,
 				E4165A12296E906D0037624C /* RxDataSources */,
+				E4165A15296FC9BB0037624C /* Lottie */,
+				E4165A1E296FD4EB0037624C /* Kingfisher */,
 			);
 			productName = Hey;
 			productReference = E41658E2296E8DA80037624C /* Hey.app */;
@@ -757,6 +799,8 @@
 				E41659F5296E8F370037624C /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				E41659FA296E90030037624C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				E4165A11296E906D0037624C /* XCRemoteSwiftPackageReference "RxDataSources" */,
+				E4165A14296FC9BB0037624C /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				E4165A1D296FD4EB0037624C /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = E41658E3296E8DA80037624C /* Products */;
 			projectDirPath = "";
@@ -776,6 +820,7 @@
 				E41659A3296E8E5A0037624C /* en.strings in Resources */,
 				E41658EF296E8DAA0037624C /* Assets.xcassets in Resources */,
 				E41658FA296E8DEA0037624C /* GoogleService-Info.plist in Resources */,
+				E4165A19296FCA090037624C /* loading.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,6 +873,7 @@
 				E41659C3296E8E5A0037624C /* Decimal+formatter.swift in Sources */,
 				E41659BD296E8E5A0037624C /* MonthAndYear.swift in Sources */,
 				E41659DF296E8E5B0037624C /* DateCell.swift in Sources */,
+				E4165A2229700FB30037624C /* SignInMethod.swift in Sources */,
 				E41659D3296E8E5B0037624C /* BaseMVVMViewController.swift in Sources */,
 				E41659A7296E8E5A0037624C /* DataProvider.swift in Sources */,
 				E41659A1296E8E5A0037624C /* CoordinatorID.swift in Sources */,
@@ -840,6 +886,7 @@
 				E41659DD296E8E5B0037624C /* TextFieldCell.swift in Sources */,
 				E41659C5296E8E5A0037624C /* UINavigationController+Extensions.swift in Sources */,
 				E416598E296E8E5A0037624C /* MessageContent.swift in Sources */,
+				E4165A24297011720037624C /* SignInState.swift in Sources */,
 				E41659DA296E8E5B0037624C /* PickerViewController.swift in Sources */,
 				E41659DC296E8E5B0037624C /* ChipView.swift in Sources */,
 				E416598D296E8E5A0037624C /* ChatListSectionModel.swift in Sources */,
@@ -850,6 +897,7 @@
 				E4165987296E8E5A0037624C /* SettingViewController.swift in Sources */,
 				E4165989296E8E5A0037624C /* MeAccountDetailViewController.swift in Sources */,
 				E4165982296E8E5A0037624C /* WelcomeViewController.swift in Sources */,
+				E4165A1C296FCB7E0037624C /* TabBarCategory.swift in Sources */,
 				E41659C1296E8E5A0037624C /* String+Extensions.swift in Sources */,
 				E41659B8296E8E5A0037624C /* UserManager.swift in Sources */,
 				E4165997296E8E5A0037624C /* MessageCellProtocol.swift in Sources */,
@@ -1027,6 +1075,7 @@
 				DEVELOPMENT_TEAM = Q83M63VYW4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Hey/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lime;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -1056,6 +1105,7 @@
 				DEVELOPMENT_TEAM = Q83M63VYW4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Hey/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Lime;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -1144,6 +1194,22 @@
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources";
 			requirement = {
 				branch = main;
+				kind = branch;
+			};
+		};
+		E4165A14296FC9BB0037624C /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		E4165A1D296FD4EB0037624C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				branch = master;
 				kind = branch;
 			};
 		};
@@ -1254,6 +1320,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E4165A11296E906D0037624C /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = RxDataSources;
+		};
+		E4165A15296FC9BB0037624C /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E4165A14296FC9BB0037624C /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		E4165A1E296FD4EB0037624C /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E4165A1D296FD4EB0037624C /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

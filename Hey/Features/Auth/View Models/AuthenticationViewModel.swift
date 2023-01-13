@@ -11,38 +11,50 @@ import RxRelay
 import RxSwift
 
 class AuthenticationViewModel: BaseViewModel {
-    
     var state: BehaviorRelay<SignInState> = BehaviorRelay(value: .loading)
-    
-    enum SignInState {
-        case loading
-        case signedIn
-        case signedOut
-    }
 }
 extension AuthenticationViewModel {
     func checkPreviousSignInSession() async {
         let hasGoogleSignIn = await hasPreviousGoogleSignInSession()
-        if !hasGoogleSignIn {
-            signOutFromApp()
+        let hasAppleSignIn = await hasPreviousAppleSignInSession()
+        
+        Observable
+            .of(hasGoogleSignIn, hasAppleSignIn)
+            .merge()
+            .subscribe { hasSignIn in
+                if hasSignIn {
+                    //
+                } else {
+                    self.signOutFromApp()
+                }
+            }
+            .disposed(by: disposeBag)
+    }
+    func signIn(with method: SignInMethod) {
+        switch method {
+        case .google:
+            googleSignIn()
+        case .apple:
+            appleSignIn()
         }
-        // TODO: - add apple sign in check
+    }
+    func signOut() {
+        guard let signInMethod = appCoordinator?.userManager.signInMethod else {
+            state.accept(.signedOut)
+            signOutFromApp()
+            return
+        }
+        switch signInMethod {
+        case .google:
+            googleSignOut()
+        case .apple:
+            appleSignOut()
+        }
     }
 }
 // MARK: - Google Sign in / Sign out
 extension AuthenticationViewModel {
-    private func hasPreviousGoogleSignInSession() async -> Bool {
-        do {
-            if !GIDSignIn.sharedInstance.hasPreviousSignIn() { return false }
-            let user = try await GIDSignIn.sharedInstance.restorePreviousSignIn()
-            try await authenticateUser(for: user)
-            return true
-        } catch {
-            ErrorHandler.shared.handle(error)
-            return false
-        }
-    }
-    func googleSignIn() {
+    private func googleSignIn() {
         do {
             guard let clientID = FirebaseApp.app()?.options.clientID else {
                 throw(FirebaseError.missingClientID)
@@ -54,13 +66,27 @@ extension AuthenticationViewModel {
             Task {
                 let _ = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
                 await signInApp()
+                appCoordinator?.userManager.signInMethod = .google
             }
         } catch {
             ErrorHandler.shared.handle(error)
             signOutFromApp()
         }
     }
-    func googleSignOut() {
+    private func hasPreviousGoogleSignInSession() async -> Observable<Bool> {
+        do {
+            guard GIDSignIn.sharedInstance.hasPreviousSignIn() else {
+                return BehaviorSubject(value: false)
+            }
+            let user = try await GIDSignIn.sharedInstance.restorePreviousSignIn()
+            try await authenticateUser(for: user)
+            return BehaviorSubject(value: true)
+        } catch {
+            ErrorHandler.shared.handle(error)
+            return BehaviorSubject(value: false)
+        }
+    }
+    private func googleSignOut() {
         defer {
             signOutFromApp()
         }
@@ -75,10 +101,18 @@ extension AuthenticationViewModel {
 }
 // MARK: - Apple Sign In / out
 extension AuthenticationViewModel {
-    func appleSignIn() {
+    private func appleSignIn() {
         // TODO: -
+        Task {
+            await signInApp()
+            appCoordinator?.userManager.signInMethod = .apple
+        }
     }
-    func appleSignOut() {
+    private func hasPreviousAppleSignInSession() async -> Observable<Bool> {
+        // TODO: - add apple sign in check
+        return BehaviorSubject(value: false)
+    }
+    private func appleSignOut() {
         // TODO: - 
     }
 }
@@ -96,19 +130,24 @@ extension AuthenticationViewModel {
     }
     private func signOutFromApp() {
         self.state.accept(.signedOut)
-        self.appCoordinator?.userManager.clearData()
+        appCoordinator?.userManager.clearData()
     }
     private func signInApp() async {
-        self.state.accept(.signedIn)
-        
         // set up sign in info
-        guard let appCoordinator = self.appCoordinator else { return }
-        appCoordinator.userManager.clearData()
-        if let user = Auth.auth().currentUser {
-            appCoordinator.userManager.setData(from: user)
-            await appCoordinator.dataProvider.updateUserData()
-            await appCoordinator.dataProvider.setup(userID: user.uid)
+        guard let appCoordinator = self.appCoordinator else {
+            state.accept(.signedOut)
+            return
         }
+        appCoordinator.userManager.clearData()
+        
+        guard let user = Auth.auth().currentUser else {
+            state.accept(.signedOut)
+            return
+        }
+        
+        appCoordinator.userManager.setData(from: user)
+        await appCoordinator.setupDataProvider()
+        state.accept(.signedIn)
     }
     private func getRootViewController() -> UIViewController? {
         guard
